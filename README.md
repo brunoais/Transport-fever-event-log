@@ -8,6 +8,7 @@ The file `stdout.txt` should be found at `[userdata]/crash_dump/stdout.txt`
 
 ## Option 1: Steam workshop
 
+https://steamcommunity.com/sharedfiles/filedetails/?id=2775765248
 
 ## Option 2: Manual
 
