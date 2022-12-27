@@ -15,19 +15,11 @@
 ]]
 
 require "serialize"
-local modules = require "utils.modules"
+local modules = require "lib.brunoais.modules"
 
-local str = modules.tryRequire("utils.str")
+modules.tryRequire("lib.brunoais.extensions.string")
 local blacklists = modules.tryRequire("devConfig.blacklists")
 local modifications = modules.tryRequire("devConfig.modifications")
-
-
-local state = {}
-
-
-local function errorInInput(msg)
-	print("Error happened", tostring(msg))
-end
 
 
 
@@ -35,11 +27,11 @@ local function hierarchyEvaluate(bl, tests)
 
 	local blLevel = bl
 	for _, value in ipairs(tests) do
-		local splitted = str.split(value, ".")
+		local splitted = string.split(value, ".")
 
 
 		-- print(value, toString(splitted), join('.', splitted[1], splitted[2]) .. '.')
-		blLevel = blLevel[value] or blLevel[splitted[1] .. '.'] or blLevel[str.join('.', splitted[1], splitted[2]) .. '.'] or blLevel[true]
+		blLevel = blLevel[value] or blLevel[splitted[1] .. '.'] or blLevel[string.join('.', splitted[1], splitted[2]) .. '.'] or blLevel[true]
 		if blLevel == nil then
 			return false
 		elseif type(blLevel) == "function" then

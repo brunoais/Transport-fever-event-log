@@ -16,36 +16,47 @@
 
 require "serialize"
 
-local modules = require "utils.modules"
+local modules = require "lib.brunoais.modules"
 
-local MAIN_MODULE = "main"
+local MAIN_MODULE = "event_log"
 
 local mainLoaded = modules.tryRequire(MAIN_MODULE)
 
 modules.defaultAllReload()
 
+local backupSave = {
+	data = {
+		count = 0,
+	}
+}
 
 local script = {
 	handleEvent = function(src, id, name, param)
-		return mainLoaded.handleEvent(src, id, name, param)
+		return mainLoaded and mainLoaded.handleEvent(src, id, name, param)
 	end,
 	save = function()
-		return mainLoaded.save()
+		backupSave.data.count = backupSave.data.count + 1
+		return (mainLoaded and mainLoaded.save()) or backupSave.data
 	end,
 	load = function(data)
-		return mainLoaded.load(data)
+		backupSave = {
+			data = data or backupSave.data
+		}
+		backupSave.data.count = backupSave.data.count or 0
+		return mainLoaded and mainLoaded.load(data)
 	end,
 	guiUpdate = function()
-		return mainLoaded.guiUpdate()
+		return mainLoaded and mainLoaded.guiUpdate()
 	end,
 	guiHandleEvent = function(src, name, param)
 		-- Reload when user opens the game menu
 		local doreload = src == "ingameMenu.quitButton" and name == "visibilityChange"
-		if doreload then
+		if doreload or not mainLoaded then
 			mainLoaded = modules.tryRequire(MAIN_MODULE)
 		end
-
-		mainLoaded.guiHandleEvent(src, name, param)
+		if mainLoaded then
+			mainLoaded.guiHandleEvent(src, name, param)
+		end
 
 	end
 }

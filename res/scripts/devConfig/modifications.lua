@@ -25,8 +25,20 @@ local eventSrcIdName = {}
 
 local guiSrcName = {
 	[true] = {
-		["builder.apply"] = function(src, id, name, param)
+		["builder.apply"] = function(src, name, param)
 			return "{ ... }"
+		end,
+	},
+	["temp.view."] = {
+		["idAdded"] = function(src, name, param)
+			print("match?")
+			if not string.match(src,"temp.view.entity_") then
+				print("not match")
+				return param
+			end
+			local entityID = tonumber(src:sub(18))
+			local tmpWindow = api.gui.util.downcast(api.gui.util.getById(src))
+			return tmpWindow
 		end,
 	},
 }

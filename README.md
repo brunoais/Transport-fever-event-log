@@ -47,6 +47,9 @@ The explanation on how to edit them to your use are included as lua comments.
 Also, consider the files already included in this repo as examples.
 
 
+# Acknowledgements:
+This product includes "module reload", developed by brunoais, available at https://github.com/brunoais/lua-module-reload.
+
 # License
 
 Code license is under a slightly modified Apache license 2.0. The slight modification legally binds you to give credit if you use the software.

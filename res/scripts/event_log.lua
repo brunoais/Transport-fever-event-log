@@ -16,13 +16,13 @@
 
 require "serialize"
 
-local modules = require "utils.modules"
+local modules = require "lib.brunoais.modules"
 
 local event_report = modules.tryRequire("event_report")
 
 
 local state = {
-	guiQueue = {}
+	count = 0,
 }
 
 
@@ -31,24 +31,36 @@ local function errorInCall(msg)
 end
 
 
+
+local waiting = 80
+
+
+local function adocUpdate()
+
+	waiting = waiting - 1
+	if waiting == 0 then
+		-- waiting = 100
+		-- print("eventlog working")
+
+	end
+end
+
+
 local script = {
 	save = function()
+		state.count = state.count + 1
 		return state
 	end,
 	load = function(data)
 		if data then
-			state.use = data.use or false
-			state.spacing = data.spacing
-			state.nTracks = data.nTracks
+			state.count = data.count or state.count
 		end
-		return state
 	end,
 	handleEvent = function(src, id, name, param)
 		xpcall(event_report.handleEvent, errorInCall, src, id, name, param)
 	end,
 	guiUpdate = function()
-		for _, fn in ipairs(state.guiQueue) do fn() end
-		state.guiQueue = {}
+		xpcall(adocUpdate, errorInCall)
 	end,
 	guiHandleEvent = function(src, name, param)
 		xpcall(event_report.guiHandleEvent, errorInCall, src, name, param)
